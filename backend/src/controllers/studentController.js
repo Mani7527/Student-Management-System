@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const Student = require('../models/Student');
 
+// @desc    Get all students
 
 // @desc    Get all students from database
 // @route   GET /api/students
@@ -63,6 +65,23 @@ const addStudent = async (req, res, next) => {
   }
 };
 
+// @desc    Delete a student
+// @route   DELETE /api/students/:id
+// @access  Public
+const deleteStudent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Verify valid MongoDB ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({
+        success: false,
+        message: `Student with id "${id}" not found`
+      });
+    }
+
+    // Find and delete the student record
+    const student = await Student.findByIdAndDelete(id);
 
 
 const getStudents = async (req, res, next) => {
@@ -103,6 +122,13 @@ const updateStudent = async (req, res, next) => {
     if (!student) {
       return res.status(404).json({
         success: false,
+        message: `Student with id "${id}" not found`
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Student deleted successfully',
         message: 'Student not found'
       });
     }
@@ -141,6 +167,9 @@ const updateStudent = async (req, res, next) => {
 };
 
 module.exports = {
+  getStudents,
+  addStudent,
+  deleteStudent
   addStudent,
   getStudents,
   updateStudent

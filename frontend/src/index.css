@@ -72,7 +72,7 @@ body {
 }
 
 .page-container {
-  max-width: 700px;
+  max-width: 850px;
   margin: 0 auto;
 }
 
@@ -203,6 +203,20 @@ body {
   background-color: #1d4ed8;
 }
 
+.btn-danger {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #b91c1c;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
 .btn:disabled {
   background-color: #94a3b8;
   cursor: not-allowed;
@@ -229,6 +243,16 @@ body {
   border: 1px solid #fecaca;
 }
 
+/* Student List & Table */
+.student-list-card {
+  margin-top: 2rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
 .btn-secondary {
   background-color: #f1f5f9;
   color: #334155;
@@ -290,6 +314,8 @@ body {
 .student-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.92rem;
+  text-align: left;
   text-align: left;
   background-color: #ffffff;
 }
@@ -297,6 +323,8 @@ body {
 .student-table th {
   background-color: #f8fafc;
   color: #475569;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -306,6 +334,7 @@ body {
 }
 
 .student-table td {
+  padding: 0.75rem 1rem;
   padding: 0.85rem 1rem;
   font-size: 0.92rem;
   color: #334155;
@@ -316,6 +345,19 @@ body {
   background-color: #f8fafc;
 }
 
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #64748b;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px dashed #cbd5e1;
+}
+
+.status-text {
+  color: #64748b;
+  font-size: 0.95rem;
+  padding: 1rem 0;
 .student-name {
   font-weight: 600;
   color: #0f172a;

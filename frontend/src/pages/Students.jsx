@@ -12,6 +12,35 @@ const emptyForm = {
 };
 
 function Students() {
+  // Form state for student details
+  const [formData, setFormData] = useState({
+    name: '',
+    rollNo: '',
+    email: '',
+    course: '',
+    semester: '',
+    phone: ''
+  });
+
+  // State for list of students
+  const [students, setStudents] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
+  // State for submission feedback and loading indicator
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
+
+  // Fetch students from backend on mount
+  const fetchStudents = async () => {
+    try {
+      setFetching(true);
+      const response = await api.get('/students');
+      setStudents(response.data.data || []);
+    } catch (error) {
+      console.error('Failed to fetch students:', error);
+    } finally {
+      setFetching(false);
   const [students, setStudents] = useState([]);
   const [formData, setFormData] = useState(emptyForm);
   const [editId, setEditId] = useState(null);
@@ -32,6 +61,7 @@ function Students() {
     fetchStudents();
   }, []);
 
+  // Update form fields on input change
   // Update form values when typing
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,6 +105,41 @@ function Students() {
     setError('');
 
     try {
+      setLoading(true);
+
+      // Send POST request to backend API
+      const response = await api.post('/students', formData);
+
+      // Show success feedback
+      setStatusMessage({
+        type: 'success',
+        text: response.data.message || 'Student added successfully!'
+      });
+
+      // Clear the form fields after successful submission
+      setFormData({
+        name: '',
+        rollNo: '',
+        email: '',
+        course: '',
+        semester: '',
+        phone: ''
+      });
+
+      // Refresh list to show newly added student
+      fetchStudents();
+    } catch (error) {
+      // Show backend error message (e.g. duplicate roll number or validation error)
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to connect to the server. Please ensure the backend is running.';
+
+      setStatusMessage({
+        type: 'error',
+        text: errorMessage
+      });
+    } finally {
+      setLoading(false);
       let response;
 
       if (editId) {
@@ -99,6 +164,43 @@ function Students() {
       setError(
         err.response?.data?.message || 'Something went wrong'
       );
+    }
+  };
+
+  // Handle student deletion with confirmation
+  const handleDelete = async (id, name) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${name}? This action cannot be undone.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingId(id);
+      const response = await api.delete(`/students/${id}`);
+
+      // Update the displayed list only after successful deletion
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student._id !== id)
+      );
+
+      setStatusMessage({
+        type: 'success',
+        text: response.data?.message || 'Student deleted successfully!'
+      });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to delete the student. Please try again.';
+
+      setStatusMessage({
+        type: 'error',
+        text: errorMessage
+      });
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -194,6 +296,57 @@ function Students() {
         </form>
       </div>
 
+      {/* Existing Students List */}
+      <div className="card student-list-card">
+        <h2>Existing Students</h2>
+        <p className="subtitle">
+          View all registered students or delete a record.
+        </p>
+
+        {fetching ? (
+          <p className="status-text">Loading students...</p>
+        ) : students.length === 0 ? (
+          <div className="empty-state">
+            <p>No student records found. Add a student using the form above.</p>
+          </div>
+        ) : (
+          <div className="table-responsive">
+            <table className="student-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Roll No</th>
+                  <th>Email</th>
+                  <th>Course</th>
+                  <th>Semester</th>
+                  <th>Phone</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => (
+                  <tr key={student._id}>
+                    <td>{student.name}</td>
+                    <td>{student.rollNo}</td>
+                    <td>{student.email}</td>
+                    <td>{student.course}</td>
+                    <td>{student.semester}</td>
+                    <td>{student.phone}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDelete(student._id, student.name)}
+                        disabled={deletingId === student._id}
+                      >
+                        {deletingId === student._id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
       <div className="card" style={{ marginTop: '24px' }}>
         <h2>Student List</h2>
 
@@ -230,3 +383,4 @@ function Students() {
 }
 
 export default Students;
+

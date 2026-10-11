@@ -25,6 +25,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Student routes
 // Student routes (GET and POST /api/students)
 app.use('/api/students', studentRoutes);
 
