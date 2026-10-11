@@ -1,6 +1,27 @@
 const Student = require('../models/Student');
 
 
+// @desc    Get all students from database
+// @route   GET /api/students
+// @access  Public
+const getStudents = async (req, res, next) => {
+  try {
+    // Find all students in MongoDB and sort them with newest first
+    const students = await Student.find().sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: students.length,
+      data: students
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Add a new student
+// @route   POST /api/students
+// @access  Public
 const addStudent = async (req, res, next) => {
   try {
     const { name, rollNo, email, course, semester, phone } = req.body;
@@ -125,4 +146,8 @@ module.exports = {
   updateStudent
 };
 
+
+  getStudents,
+  addStudent
+};
 
