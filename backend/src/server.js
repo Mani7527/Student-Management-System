@@ -29,6 +29,7 @@ app.get('/api/health', (req, res) => {
 // Authentication routes (Register and Login)
 app.use('/api/auth', authRoutes);
 
+// Student routes
 // Student routes (GET and POST /api/students)
 app.use('/api/students', studentRoutes);
 
