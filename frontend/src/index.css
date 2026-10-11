@@ -199,6 +199,36 @@ body {
   color: #ffffff;
 }
 
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Alerts */
+.alert {
+  padding: 0.85rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
 .btn-secondary {
   background-color: #f1f5f9;
   color: #334155;
