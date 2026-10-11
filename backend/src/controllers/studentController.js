@@ -1,4 +1,22 @@
+const mongoose = require('mongoose');
 const Student = require('../models/Student');
+
+// @desc    Get all students
+// @route   GET /api/students
+// @access  Public
+const getStudents = async (req, res, next) => {
+  try {
+    const students = await Student.find().sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: students.length,
+      data: students
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // @desc    Add a new student
 // @route   POST /api/students
@@ -44,6 +62,43 @@ const addStudent = async (req, res, next) => {
   }
 };
 
+// @desc    Delete a student
+// @route   DELETE /api/students/:id
+// @access  Public
+const deleteStudent = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Verify valid MongoDB ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({
+        success: false,
+        message: `Student with id "${id}" not found`
+      });
+    }
+
+    // Find and delete the student record
+    const student = await Student.findByIdAndDelete(id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: `Student with id "${id}" not found`
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Student deleted successfully',
+      data: student
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
-  addStudent
+  getStudents,
+  addStudent,
+  deleteStudent
 };
