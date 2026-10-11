@@ -26,12 +26,13 @@ app.get('/api/health', (req, res) => {
 });
 
 // Student routes
+// Student routes (GET and POST /api/students)
 app.use('/api/students', studentRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
