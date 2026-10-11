@@ -30,7 +30,7 @@ function ViewStudents() {
       console.error('Error fetching students:', error);
       const msg =
         error.response?.data?.message ||
-        'Failed to connect to the server. Please make sure the backend is running on port 5001.';
+        'Failed to connect to the server. Please make sure the backend is running.';
       setErrorMessage(msg);
     } finally {
       setLoading(false);
