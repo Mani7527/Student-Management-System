@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 
 function Students() {
+  // Check if user is logged in
+  const token = localStorage.getItem('token');
+
   // Form state for student details
   const [formData, setFormData] = useState({
     name: '',
@@ -30,6 +34,15 @@ function Students() {
     e.preventDefault();
     setStatusMessage({ type: '', text: '' });
 
+    // Ensure user is authenticated
+    if (!token) {
+      setStatusMessage({
+        type: 'error',
+        text: 'Access denied. Please log in before adding a student.'
+      });
+      return;
+    }
+
     // Client-side validation: ensure no empty fields
     const { name, rollNo, email, course, semester, phone } = formData;
     if (!name || !rollNo || !email || !course || !semester || !phone) {
@@ -39,6 +52,7 @@ function Students() {
       });
       return;
     }
+
 
     try {
       setLoading(true);
@@ -84,6 +98,16 @@ function Students() {
           Enter student information below to add a new record to MongoDB.
         </p>
 
+        {/* Authentication Warning if not logged in */}
+        {!token && (
+          <div className="alert alert-error" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <span>🔒 <strong>Login Required:</strong> You must be logged in to add a student record.</span>
+            <Link to="/login" className="btn btn-primary" style={{ padding: '0.4rem 0.85rem', fontSize: '0.85rem' }}>
+              Log In Now
+            </Link>
+          </div>
+        )}
+
         {/* Success or error message notification */}
         {statusMessage.text && (
           <div className={`alert alert-${statusMessage.type}`}>
@@ -101,7 +125,7 @@ function Students() {
               placeholder="e.g. John Doe"
               value={formData.name}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || !token}
               required
             />
           </div>
@@ -115,7 +139,7 @@ function Students() {
               placeholder="e.g. 21CS001"
               value={formData.rollNo}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || !token}
               required
             />
           </div>
@@ -129,7 +153,7 @@ function Students() {
               placeholder="e.g. john@college.edu"
               value={formData.email}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || !token}
               required
             />
           </div>
@@ -143,7 +167,7 @@ function Students() {
               placeholder="e.g. B.Tech CSE"
               value={formData.course}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || !token}
               required
             />
           </div>
@@ -157,7 +181,7 @@ function Students() {
               placeholder="e.g. 6th"
               value={formData.semester}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || !token}
               required
             />
           </div>
@@ -171,15 +195,16 @@ function Students() {
               placeholder="e.g. 9876543210"
               value={formData.phone}
               onChange={handleChange}
-              disabled={loading}
+              disabled={loading || !token}
               required
             />
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Adding Student...' : 'Submit Student'}
+          <button type="submit" className="btn btn-primary" disabled={loading || !token}>
+            {loading ? 'Adding Student...' : !token ? '🔒 Please Log In to Submit' : 'Submit Student'}
           </button>
         </form>
+
       </div>
     </div>
   );
